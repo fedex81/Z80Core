@@ -13,9 +13,16 @@ public interface IMemIoOps {
 
     void poke8(int address, int value);
 
-    int peek16(int address);
+    default int peek16(int address) {
+        int lsb = peek8(address);
+        int msb = peek8(address + 1);
+        return (msb << 8) | lsb;
+    }
 
-    void poke16(int address, int word);
+    default void poke16(int address, int word) {
+        poke8(address, word);
+        poke8(address + 1, word >>> 8);
+    }
 
     int inPort(int port);
 
