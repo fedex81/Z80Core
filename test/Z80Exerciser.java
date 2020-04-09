@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import z80core.IMemIoOps;
 import z80core.MemIoOps;
 import z80core.NotifyOps;
 import z80core.Z80;

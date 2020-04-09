@@ -9,7 +9,7 @@ package z80core;
  *
  * @author jsanchez
  */
-public class MemIoOps {
+public class MemIoOps implements IMemIoOps {
     private byte z80Ram[] = null;
     private byte z80Ports[] = null;
     protected long tstates = 0;
@@ -93,6 +93,11 @@ public class MemIoOps {
     }
 
     public boolean isActiveINT() {
+        return false;
+    }
+
+    @Override
+    public boolean setActiveINT(boolean val) {
         return false;
     }
 

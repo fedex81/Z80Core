@@ -157,7 +157,7 @@ import java.util.Arrays;
 
 public class Z80 {
 
-    private MemIoOps MemIoImpl;
+    private IMemIoOps MemIoImpl;
     private NotifyOps NotifyImpl;
     // Se está ejecutando una instrucción DDXX, EDXX o FDXX 
     // Solo puede (debería) contener uno de 4 valores [0x00, 0xDD, 0xED, 0xFD]
@@ -228,7 +228,7 @@ public class Z80 {
     // Si está activa la línea INT
     // En el 48 y los +2a/+3 la línea INT se activa durante 32 ciclos de reloj
     // En el 128 y +2, se activa 36 ciclos de reloj
-    private boolean activeINT = false;
+//    private boolean activeINT = false;
     // Modos de interrupción
     public enum IntMode { IM0, IM1, IM2 };
     // Modo de interrupción
@@ -313,7 +313,7 @@ public class Z80 {
     private final boolean breakpointAt[] = new boolean[65536];
 
     // Constructor de la clase
-    public Z80(MemIoOps memory, NotifyOps notify) {
+    public Z80(IMemIoOps memory, NotifyOps notify) {
         MemIoImpl = memory;
         NotifyImpl = notify;
         execDone = false;
@@ -321,7 +321,7 @@ public class Z80 {
         reset();
     }
 
-    public void setMemIoHandler(MemIoOps memIo) {
+    public void setMemIoHandler(IMemIoOps memIo) {
         MemIoImpl = memIo;
     }
 
@@ -816,11 +816,11 @@ public class Z80 {
 
     // La línea INT se activa por nivel
     public final boolean isINTLine() {
-        return activeINT;
+        return MemIoImpl.isActiveINT();
     }
 
-    public final void setINTLine(boolean intLine) {
-        activeINT = intLine;
+    public final boolean setINTLine(boolean intLine) {
+        return MemIoImpl.setActiveINT(intLine);
     }
 
     //Acceso al modo de interrupción
@@ -881,7 +881,7 @@ public class Z80 {
         state.setIFF1(ffIFF1);
         state.setIFF2(ffIFF2);
         state.setIM(modeINT);
-        state.setINTLine(activeINT);
+        state.setINTLine(MemIoImpl.isActiveINT());
         state.setPendingEI(pendingEI);
         state.setNMI(activeNMI);
         state.setFlagQ(lastFlagQ);
@@ -916,7 +916,7 @@ public class Z80 {
         ffIFF1 = state.isIFF1();
         ffIFF2 = state.isIFF2();
         modeINT = state.getIM();
-        activeINT = state.isINTLine();
+        MemIoImpl.setActiveINT(state.isINTLine());
         pendingEI = state.isPendingEI();
         activeNMI = state.isNMI();
         flagQ = false;
@@ -966,7 +966,7 @@ public class Z80 {
         ffIFF2 = false;
         pendingEI = false;
         activeNMI = false;
-        activeINT = false;
+        MemIoImpl.setActiveINT(false);
         halted = false;
         setIM(IntMode.IM0);
         lastFlagQ = false;
