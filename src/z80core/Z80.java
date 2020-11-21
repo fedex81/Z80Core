@@ -1720,7 +1720,8 @@ public class Z80 {
         ffIFF1 = ffIFF2 = false;
         push(regPC);  // el push a�adir� 6 t-estados (+contended si toca)
         if (modeINT == IntMode.IM2) {
-            regPC = MemIoImpl.peek16((regI << 8) | 0xff); // +6 t-estados
+            int newAddress = (regI << 8) | MemIoImpl.getAddressOnBus();
+            regPC = MemIoImpl.peek16(newAddress); // +6 t-estados
         } else {
             regPC = 0x0038;
         }

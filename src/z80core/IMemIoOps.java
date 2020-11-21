@@ -30,6 +30,10 @@ public interface IMemIoOps {
 
     void addressOnBus(int address, int tstates);
 
+    default int getAddressOnBus(){
+        return 0xFF;
+    }
+
     void interruptHandlingTime(int tstates);
 
     boolean isActiveINT();
