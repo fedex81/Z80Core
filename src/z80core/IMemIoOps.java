@@ -43,4 +43,8 @@ public interface IMemIoOps {
     long getTstates();
 
     void reset();
+
+    default int getPcUpperLimit(){
+        return 0xFFFF;
+    }
 }
